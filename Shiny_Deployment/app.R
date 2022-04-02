@@ -85,7 +85,8 @@ body <- dashboardBody(
                              p('1) Overview: select variables such as postal district (please refer to the postal district map below for referance), size, tenure etc to study price distribution of past transactions in a reactive map and a violin plot.'),
                              p('2) Price Sensitivity: generate insights on how the unit price varies across different property characteristics. Performed statistical tests to check if the effect of each attribute on price is statistically significant.'),
                              p('3) Time Trend: explore how property market reacted to significant COVID-19 events by zooming in specific property types or postal districts.'),
-                             p('4) Mythbusting: Pre-conceptions about property market demystified! Are older houses bigger? Are some housing types more accessible than others? Does launch phasing matter when buying new condominiums?')
+                             p('4) Mythbusting: Pre-conceptions about property market demystified! Are older houses bigger? Are some housing types more accessible than others? Does launch phasing matter when buying new condominiums?'),
+                             p(a('User Guide for the Application'), href='https://onedrive.live.com/View.aspx?resid=A191734FD72A1486!1895&wdSlideId=256&wdModeSwitchTime=1648899430874&authkey=!AMWn1oEyKzjUzrg')
                              )
                              )
                     ),
