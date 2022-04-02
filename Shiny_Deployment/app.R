@@ -21,39 +21,18 @@ library(ggthemes)
 library(shinycssloaders)
 
 
-#################################  Data Prep for All ######################################################
+#################################  Load data ######################################################
 
 sales <- readRDS("data/sales_prep.rds")
 
 rent <- readRDS("data/rental_prep.rds")
 
-
-#################################  Data Prep for Overview Tabs ############################################
-sales_int <- sales %>%
-  mutate("Sale_Date_p" = format((as.Date(Sale_Date, "%d-%b-%y")), format = "%Y-%m-%d"))
-  
-sales_sf <- st_as_sf(sales_int, coords = c("longitude","latitude")) 
-
-rent_int <- rent %>%
-  mutate(No_of_Bedroom_Bin = factor(No_of_Bedroom_Bin, levels = c("1", "2", "3", ">= 4"))) %>%
-  mutate(Lease_month = substring(Lease_Commencement_Date,1,3)) %>%
-  mutate(Lease_month = match(Lease_month, month.abb)) %>%
-  mutate(Lease_year = as.numeric(substring(Lease_Commencement_Date,5,6))) %>%
-  mutate(Lease_Date = paste0('01-',Lease_Commencement_Date)) %>%
-  mutate(Lease_Date = anydate(as.Date(Lease_Date, "%d-%b-%y")))
-
-rent_sf <- st_as_sf(rent_int, coords = c("longitude","latitude")) 
-
-#################################  Data Prep for Time and Myth3 Tabs ############################################
-
-postal <- read_csv("data/postal_districts.csv")
-
 launch <- read_csv("data/recent_launch.csv")
 
-sales_t <- sales %>%
+sales <- sales %>%
   mutate(Sale_Date_DDMMYY = as.Date(Sale_Date, "%d-%b-%y"))
 
-rent_t <- rent  %>%
+rent <- rent  %>%
   mutate(Rent_Date_DDMMYY = as.Date(paste0("01-", Lease_Commencement_Date), format = "%d-%b-%y"))
 
 #################################  Site Menu Bar  ###########################################################
@@ -94,16 +73,16 @@ body <- dashboardBody(
               theme = shinytheme('flatly'), #https://rstudio.github.io/shinythemes/
                     titlePanel(h2("Singapore Golden Goose: How to spot a Golden Goose (a.k.a.) Profitable Rental Property in Singapore")),
                     fluidRow(
-                      infoBox(h6("No. of Sales Transactions"), "82,360", icon=icon("stamp"), color="navy", fill=TRUE, width = 3),
-                      infoBox(h6("No. of Lease Transactions"), "298,639", icon=icon("bed"), color="orange", fill=TRUE, width = 3),
-                      infoBox(h6("Period Covered"), "Jan 2019 to Feb 2022", icon=icon("calendar"), color="yellow", fill=TRUE, width = 3),
-                      infoBox(h6("Data Source"), "URA REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
+                      infoBox(h5("No. of Sales Transactions"), "82,360", icon=icon("stamp"), color="navy", fill=TRUE, width = 3),
+                      infoBox(h5("No. of Lease Transactions"), "298,639", icon=icon("bed"), color="orange", fill=TRUE, width = 3),
+                      infoBox(h5("Period Covered"), "Jan 2019 to Feb 2022", icon=icon("calendar"), color="yellow", fill=TRUE, width = 3),
+                      infoBox(h5("Data Source"), "URA's REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
                       column(width = 12,
                              h3('Our Application'),
                              p('Using SGGoldenGoose Application, landlords-wannabes can analyse and visualize sales and rental transactions in ease, such that more informed choices about investing in private residential property in Singapore to earn passive rental income can be made.'),
                              h3('Application Features'),
-                             p('As seen in the sidebar menu on the left, this application has the following key modules:'),
-                             p('1) Overview: select varaibles such as postal district (please refer to the postal district map below for referance), size, tenure etc to study price distribution of past transactions in a reactive map and a violin plot.'),
+                             p('As seen in the sidebar menu on the left, this application has 4 key modules:'),
+                             p('1) Overview: select variables such as postal district (please refer to the postal district map below for referance), size, tenure etc to study price distribution of past transactions in a reactive map and a violin plot.'),
                              p('2) Price Sensitivity: generate insights on how the unit price varies across different property characteristics. Performed statistical tests to check if the effect of each attribute on price is statistically significant.'),
                              p('3) Time Trend: explore how property market reacted to significant COVID-19 events by zooming in specific property types or postal districts.'),
                              p('4) Mythbusting: Pre-conceptions about property market demystified! Are older houses bigger? Are some housing types more accessible than others? Does launch phasing matter when buying new condominiums?')
@@ -129,48 +108,47 @@ body <- dashboardBody(
               box(
                 title = "Map - Sales Transactions",width = 6, status = "danger", solidHeader = TRUE,
                 collapsible = TRUE,
-                withSpinner(tmapOutput("mapPlot", height = 430), color = "orange")
+                withSpinner(tmapOutput("mapPlot", height = 350), color = "orange")
               ),
               box(
                 title = "Violin Plot - Distribution of Sales Transaction Price", width = 6, status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
-                withSpinner(plotlyOutput("violinPlot", height = 430), color = "orange")
+                withSpinner(plotlyOutput("violinPlot", height = 350), color = "orange")
               )),
             
             fluidRow(
-                box(title = "Which District? What Price?", width=3, height=230, status = "warning", solidHeader = TRUE,
+                box(title = "Which District? What Price?", width=3, height=260, status = "warning", solidHeader = TRUE,
                     pickerInput(
                       inputId = "postaldistrict", 
                       label = "Postal District:",
                       choices = c("1 - Raffles Place, Cecil, Marina, People's Park" = "1",
-                                           "2 - Anson, Tanjong Pagar" = "2",
-                                           "3 - Queenstown, Tiong Bahru" = "3",
-                                           "4 - Telok Blangah, Harbourfront" = "4",
-                                           "5 - Pasir Panjang, Hong Leong Garden, Clementi New Town" = "5",
-                                           "6 - High Street, Beach Road (part)" = "6",
-                                           "7 - Middle Road, Golden Mile" = "7",
-                                           "8 - Little India" = "8",
-                                           "9 - Orchard, Cairnhill, River Valley" = "9",
-                                           "10 - Ardmore, Bukit Timah, Holland Road, Tanglin" = "10",
-                                           "11 - Watten Estate, Novena, Thomson" = "11",
-                                           "12 - Balestier, Toa Payoh, Serangoon" = "12",
-                                           "13 - Macpherson, Braddell" = "13",
-                                           "14 - Geylang, Eunos" = "14",
-                                           "15 - Katong, Joo Chiat, Amber Road" = "15",
-                                           "16 - Bedok, Upper East Coast, Eastwood, Kew Drive" = "16",
-                                           "17 - Loyang, Changi" = "17",
-                                           "18 - Tampines, Pasir Ris" = "18",
-                                           "19 - Serangoon Garden, Hougang, Punggol" = "19",
-                                           "20 - Bishan, Ang Mo Kio" = "20",
-                                           "21 - Upper Bukit Timah, Clementi Park, Ulu Pandan" = "21",
-                                           "22 - Jurong" = "22",
-                                           "23 - Hillview, Dairy Farm, Bukit Panjang, Choa Chu Kang" = "23",
-                                           "24 - Lim Chu Kang, Tengah" = "24",
-                                           "25 - Kranji, Woodgrove" = "25",
-                                           "26 - Upper Thomson, Springleaf" = "26",
-                                           "27 - Yishun, Sembawang" = "27",
-                                           "28 - Seletar" = "28"
-                                           ),
+                                  "2 - Anson, Tanjong Pagar" = "2",
+                                  "3 - Queenstown, Tiong Bahru" = "3",
+                                  "4 - Telok Blangah, Harbourfront" = "4",
+                                  "5 - Pasir Panjang, Hong Leong Garden, Clementi New Town" = "5",
+                                  "6 - High Street, Beach Road (part)" = "6",
+                                  "7 - Middle Road, Golden Mile" = "7",
+                                  "8 - Little India" = "8",
+                                  "9 - Orchard, Cairnhill, River Valley" = "9",
+                                  "10 - Ardmore, Bukit Timah, Holland Road, Tanglin" = "10",
+                                  "11 - Watten Estate, Novena, Thomson" = "11",
+                                  "12 - Balestier, Toa Payoh, Serangoon" = "12",
+                                  "13 - Macpherson, Braddell" = "13",
+                                  "14 - Geylang, Eunos" = "14",
+                                  "15 - Katong, Joo Chiat, Amber Road" = "15",
+                                  "16 - Bedok, Upper East Coast, Eastwood, Kew Drive" = "16",
+                                  "17 - Loyang, Changi" = "17",
+                                  "18 - Tampines, Pasir Ris" = "18",
+                                  "19 - Serangoon Garden, Hougang, Punggol" = "19",
+                                  "20 - Bishan, Ang Mo Kio" = "20",
+                                  "21 - Upper Bukit Timah, Clementi Park, Ulu Pandan" = "21",
+                                  "22 - Jurong" = "22",
+                                  "23 - Hillview, Dairy Farm, Bukit Panjang, Choa Chu Kang" = "23",
+                                  "24 - Lim Chu Kang, Tengah" = "24",
+                                  "25 - Kranji, Woodgrove" = "25",
+                                  "26 - Upper Thomson, Springleaf" = "26",
+                                  "27 - Yishun, Sembawang" = "27",
+                                  "28 - Seletar" = "28"),
                       selected = c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"),
                       options = list(
                         `actions-box` = TRUE,
@@ -185,7 +163,7 @@ body <- dashboardBody(
                               min = 1072,
                               max = 53131,
                               value = c(3000,15000))),
-                box(title = "What Size? What Age?", width=3,height=230, status = "warning", solidHeader = TRUE,
+                box(title = "What Size? What Age?", width=3,height=260, status = "warning", solidHeader = TRUE,
                     selectInput(inputId = "floorarea",
                                 label = "Floor Area (SQM):",
                                 choices = c("0 - 60" = "0 - 60",
@@ -199,7 +177,7 @@ body <- dashboardBody(
                                 max = 92,
                                 value = c(0,10))
                                ),
-              box(title = "Tenure? Type of Sales?", width=2, height=230, status = "warning", solidHeader = TRUE,
+              box(title = "Tenure? Type of Sales?", width=2, height=260, status = "warning", solidHeader = TRUE,
                   awesomeCheckboxGroup(inputId = "tenure",
                                        label = "Tenure:",
                                        choices = c("< 99" = "<99",
@@ -217,7 +195,7 @@ body <- dashboardBody(
                                        inline = TRUE, 
                                        status = "primary")
                 ),
-              box(title = "Past Sales Transactions?", width=2, height=230, status = "warning", solidHeader = TRUE,
+              box(title = "Past Sales Transactions?", width=2, height=260, status = "warning", solidHeader = TRUE,
                   dateInput(inputId = "saledatefrom",
                             label = "Date (From):",
                             value = '2019-01-01'),
@@ -225,7 +203,7 @@ body <- dashboardBody(
                             label = "Date (To):",
                             value = '2022-02-28')
               ),
-              box(title = "Property Type?", width=2, height=230, status = "warning", solidHeader = TRUE,
+              box(title = "Property Type?", width=2, height=260, status = "warning", solidHeader = TRUE,
                   awesomeCheckboxGroup(inputId = "propertytype",
                                label = "Property Type:",
                                choices = c("Condo / Apartment" = "Condo/Apartment",
@@ -248,7 +226,7 @@ body <- dashboardBody(
             fluidRow(
               box(title = "Choose Input",
                   width=3,
-                  height=550,
+                  height=580,
                   status="warning",
                   solidHeader = TRUE,
                   radioButtons(
@@ -275,7 +253,7 @@ body <- dashboardBody(
               
               box(title = "Effect of Attribute on Price ($/sqm)",
                   width=9,
-                  height=600,
+                  height=580,
                   status="primary",
                   solidHeader = TRUE,
                   withSpinner(plotOutput(outputId = "buy_price_plot1"), color = "orange")
@@ -320,7 +298,7 @@ body <- dashboardBody(
                                            "Sub Sale" = "Sub Sale"),
                                selected = "All")
               ),
-              box(title = "Horizon Plot of Monthly Change in Sales Price", width=10, height=680, status = "primary", solidHeader = TRUE,
+              box(title = "Horizon Plot of Month-to-Month Change in Median Sales Unit Price ($/sqm)", width=10, height=680, status = "primary", solidHeader = TRUE,
                   withSpinner(plotOutput(outputId = "hist_Sales_Plot"), color = "orange")
               )
             ),
@@ -335,6 +313,18 @@ body <- dashboardBody(
                            align = "left",
                            width="100%")
               )
+            ),
+            fluidRow(
+              box(title = "Covid Timeline Reference",
+                  width=8,
+                  status = "danger",
+                  collapsible = TRUE,
+                  collapsed = TRUE,
+                  solidHeader = TRUE,
+                  tags$img(src = 'covid_timeline.jpg', 
+                           align = "left",
+                           width="50%")
+              )
             )
     ),
     
@@ -343,8 +333,35 @@ body <- dashboardBody(
               box(title = "Which District?", width=2,status = "warning", solidHeader = TRUE,
                   selectInput(inputId = "buyTimeEach_postalDesc",
                               label = "Postal District:",
-                              choices = postal$Postal_Desc),
-                  #selected = "ALL"),
+                              choices = c("1 - Raffles Place, Cecil, Marina, People's Park",
+                                          "2 - Anson, Tanjong Pagar",
+                                          "3 - Queenstown, Tiong Bahru",
+                                          "4 - Telok Blangah, Harbourfront",
+                                          "5 - Pasir Panjang, Hong Leong Garden, Clementi New Town",
+                                          "6 - High Street, Beach Road (part)",
+                                          "7 - Middle Road, Golden Mile",
+                                          "8 - Little India",
+                                          "9 - Orchard, Cairnhill, River Valley",
+                                          "10 - Ardmore, Bukit Timah, Holland Road, Tanglin",
+                                          "11 - Watten Estate, Novena, Thomson",
+                                          "12 - Balestier, Toa Payoh, Serangoon",
+                                          "13 - Macpherson, Braddell",
+                                          "14 - Geylang, Eunos",
+                                          "15 - Katong, Joo Chiat, Amber Road",
+                                          "16 - Bedok, Upper East Coast, Eastwood, Kew Drive",
+                                          "17 - Loyang, Changi",
+                                          "18 - Tampines, Pasir Ris",
+                                          "19 - Serangoon Garden, Hougang, Punggol",
+                                          "20 - Bishan, Ang Mo Kio",
+                                          "21 - Upper Bukit Timah, Clementi Park, Ulu Pandan",
+                                          "22 - Jurong",
+                                          "23 - Hillview, Dairy Farm, Bukit Panjang, Choa Chu Kang",
+                                          "24 - Lim Chu Kang, Tengah",
+                                          "25 - Kranji, Woodgrove",
+                                          "26 - Upper Thomson, Springleaf",
+                                          "27 - Yishun, Sembawang",
+                                          "28 - Seletar"),
+                              selected = "1 - Raffles Place, Cecil, Marina, People's Park"),
                   # title = "What type of Property?", width=2, status = "warning", solidHeader = TRUE,
                   radioButtons(inputId = "buyTimeEach_propertyType",
                                label = "Property Type:",
@@ -361,7 +378,7 @@ body <- dashboardBody(
                                            "Resale" = "Resale",
                                            "Sub Sale" = "Sub Sale"))
               ),
-              box(title = "Time Series of Monthly Change in Sales Price", width=10, status = "primary", solidHeader = TRUE,
+              box(title = "Time Series Box Plot of Monthly Change in Sales Unit Price ($/sqm)", width=10, status = "primary", solidHeader = TRUE,
                   withSpinner(plotlyOutput(outputId = "tsBoxplot_Sales_Plot"), color = "orange")
               )
             )
@@ -382,16 +399,16 @@ body <- dashboardBody(
               box(
                 title = "Map - Lease Transactions",width = 6, status = "danger", solidHeader = TRUE,
                 collapsible = TRUE,
-                withSpinner(tmapOutput("mapPlotRent", height = 430), color = "orange")
+                withSpinner(tmapOutput("mapPlotRent", height = 350), color = "orange")
               ),
               box(
                 title = "Violin Plot - Distribution of Monthly Rent", width = 6, status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
-                withSpinner(plotlyOutput("violinPlotRent", height = 430), color = "orange")
+                withSpinner(plotlyOutput("violinPlotRent", height = 350), color = "orange")
               )),
             
             fluidRow(
-              box(title = "Which District? What Monthly Rent?", width=3, height = 230, status = "warning", solidHeader = TRUE,
+              box(title = "Which District? What Monthly Rent?", width=3, height = 250, status = "warning", solidHeader = TRUE,
                   pickerInput(
                     inputId = "postaldistrictrent", 
                     label = "Postal District:",
@@ -439,9 +456,9 @@ body <- dashboardBody(
                               min = 307,
                               max = 60000,
                               value = c(307,4000))),
-              box(title = "What Size? Near to MRT?", width=3, height = 230, status = "warning", solidHeader = TRUE,
+              box(title = "What Size? Near to MRT?", width=3, height = 250, status = "warning", solidHeader = TRUE,
                   selectInput(inputId = "floorarearent",
-                              label = "Floor Area (SQM):",
+                              label = "Floor Area (sqm):",
                               choices = c("0 - 60" = "0 - 60",
                                           "61 - 90" = "61 - 90",
                                           "91 - 130" = "91 - 130",
@@ -453,7 +470,7 @@ body <- dashboardBody(
                               max = 3322,
                               value = c(26,600))
               ),
-              box(title = "Property Type?", width=2, height = 230, status = "warning", solidHeader = TRUE,
+              box(title = "Property Type?", width=2, height = 250, status = "warning", solidHeader = TRUE,
                   awesomeCheckboxGroup(inputId = "bedroomno",
                                      label = "No. of Bedrooms:",
                                      choices = c("1" = "1",
@@ -471,7 +488,7 @@ body <- dashboardBody(
                                      selected = "Condo/Apartment")
     
               ),
-              box(title = "Lease Commencement (From)?", width=2, height = 230, status = "warning", solidHeader = TRUE,
+              box(title = "Lease Commencement (From)?", width=2, height = 250, status = "warning", solidHeader = TRUE,
                   radioGroupButtons(inputId = "rentyearfrom",
                               label = "Year:",
                               choices = c("2019" = "19",
@@ -496,7 +513,7 @@ body <- dashboardBody(
                                           "12" = "12"),
                               selected = "8")
               ),
-              box(title = "Lease Commencement (To)?", width=2, height = 230, status = "warning", solidHeader = TRUE,
+              box(title = "Lease Commencement (To)?", width=2, height = 250, status = "warning", solidHeader = TRUE,
                   radioGroupButtons(inputId = "rentyearto",
                                     label = "Year:",
                                     choices = c("2019" = "19",
@@ -533,6 +550,7 @@ body <- dashboardBody(
               box(title = "Choose Input",
                   status="warning",
                   width=3,
+                  height=580,
                   solidHeader = TRUE,
                   radioButtons(
                     inputId="rent_price_var1",
@@ -553,9 +571,9 @@ body <- dashboardBody(
                                 "Bayes" = "b"),
                     selected = "r")
               ),
-              box(title = "Effect of Attribute on Rental Price ($/sqm)",
+              box(title = "Effect of Attribute on Rental Unit Price ($/sqm)",
                   width=9,
-                  height = 600,
+                  height = 580,
                   status="primary",
                   solidHeader = TRUE,
                   withSpinner(plotOutput(outputId = "rent_price_plot1"), color = "orange")
@@ -590,7 +608,7 @@ body <- dashboardBody(
                                            "Semi-Detached House" = "Semi-Detached House",
                                            "Detached House" = "Detached House"))
               ),
-              box(title = "Horizon Plot of Monthly Change in Rent Price", width=10, height=680, status = "primary", solidHeader = TRUE,
+              box(title = "Horizon Plot of Month-to-Month Change in Rental Unit Price ($/sqm)", width=10, height=680, status = "primary", solidHeader = TRUE,
                   withSpinner(plotOutput(outputId = "hist_Rent_Plot"), color="orange")
               )
             ),
@@ -605,6 +623,18 @@ body <- dashboardBody(
                            align = "left",
                            width="100%")
               )
+            ),
+            fluidRow(
+              box(title = "Covid Timeline Reference",
+                  width=8,
+                  status = "danger",
+                  collapsible = TRUE,
+                  collapsed = TRUE,
+                  solidHeader = TRUE,
+                  tags$img(src = 'covid_timeline.jpg', 
+                           align = "left",
+                           width="50%")
+              )
             )
     ),
     
@@ -613,8 +643,35 @@ body <- dashboardBody(
               box(title = "Which District?", width=2,status = "warning", solidHeader = TRUE,
                   selectInput(inputId = "rentTimeEach_postalDesc",
                               label = "Postal District:",
-                              choices = postal$Postal_Desc),
-                  #selected = "ALL"),
+                              choices = c("1 - Raffles Place, Cecil, Marina, People's Park",
+                                          "2 - Anson, Tanjong Pagar",
+                                          "3 - Queenstown, Tiong Bahru",
+                                          "4 - Telok Blangah, Harbourfront",
+                                          "5 - Pasir Panjang, Hong Leong Garden, Clementi New Town",
+                                          "6 - High Street, Beach Road (part)",
+                                          "7 - Middle Road, Golden Mile",
+                                          "8 - Little India",
+                                          "9 - Orchard, Cairnhill, River Valley",
+                                          "10 - Ardmore, Bukit Timah, Holland Road, Tanglin",
+                                          "11 - Watten Estate, Novena, Thomson",
+                                          "12 - Balestier, Toa Payoh, Serangoon",
+                                          "13 - Macpherson, Braddell",
+                                          "14 - Geylang, Eunos",
+                                          "15 - Katong, Joo Chiat, Amber Road",
+                                          "16 - Bedok, Upper East Coast, Eastwood, Kew Drive",
+                                          "17 - Loyang, Changi",
+                                          "18 - Tampines, Pasir Ris",
+                                          "19 - Serangoon Garden, Hougang, Punggol",
+                                          "20 - Bishan, Ang Mo Kio",
+                                          "21 - Upper Bukit Timah, Clementi Park, Ulu Pandan",
+                                          "22 - Jurong",
+                                          "23 - Hillview, Dairy Farm, Bukit Panjang, Choa Chu Kang",
+                                          "24 - Lim Chu Kang, Tengah",
+                                          "25 - Kranji, Woodgrove",
+                                          "26 - Upper Thomson, Springleaf",
+                                          "27 - Yishun, Sembawang",
+                                          "28 - Seletar"),
+                  selected = "1 - Raffles Place, Cecil, Marina, People's Park"),
                   # title = "What type of Property?", width=2, status = "warning", solidHeader = TRUE,
                   radioButtons(inputId = "rentTimeEach_propertyType",
                                label = "Property Type:",
@@ -625,7 +682,7 @@ body <- dashboardBody(
                                            "Semi-Detached House" = "Semi-Detached House",
                                            "Detached House" = "Detached House"))
               ),
-              box(title = "Time Series of Monthly Change in Rent Price", width=10, status = "primary", solidHeader = TRUE,
+              box(title = "Time Series Box Plot of Monthly Change in Rental Unit Price ($/sqm)", width=10, status = "primary", solidHeader = TRUE,
                   withSpinner(plotlyOutput(outputId = "tsBoxplot_Rent_Plot"), color = "orange")
               )
             )
@@ -668,8 +725,7 @@ body <- dashboardBody(
                            For condominiums/apartments, the average size of uncompleted houses sold were about half the size of those built before 1990. 
                            The first few executive condominium launches in the 1990s were about 25% larger than those still under construction."),
                          p("It should be noted that this is only based on houses transacted in the past 3 years and does not cover all private houses that have been built, 
-                                        so it may not be truly representative of the population. From the marginal histograms, we can see that there are fewer older houses transacting than new houses, 
-                                          especially for condos/apartments (uncompleted houses are assumed to complete in 2022 for visualisation purposes)."))
+                                        so it may not be truly representative of the population."))
               ),
               column(width=7,
                      box(title = "Floor Area against Completion Year",
@@ -749,7 +805,7 @@ body <- dashboardBody(
                      )
               ),
               column(width=9,
-                     box(title = "Quarterly Change in Sales Price of Recent Launched Projects by Project Name",
+                     box(title = "Quarterly Change in Sales Price of Newly Launched Projects by Project Name",
                          width=NULL,
                          solidHeader = TRUE,
                          status = "primary",
@@ -777,6 +833,10 @@ server <- function(input, output){
 
 #######################################  Server > Sales Overview  #################################################
   
+  sales_sf <- sales %>%
+    mutate("Sale_Date_p" = format((as.Date(Sale_Date, "%d-%b-%y")), format = "%Y-%m-%d")) %>%
+    st_as_sf(coords = c("longitude","latitude")) 
+  
   dataset = reactive({
     sales_sf %>%
       filter(`Postal_District` %in% input$postaldistrict) %>%
@@ -793,6 +853,7 @@ server <- function(input, output){
   })
   
   output$mapPlot <- renderTmap({
+    
     tm_shape(shp = dataset(),
              bbox = st_bbox(sales_sf)) +
       tm_symbols(col = "Type_of_Sale", title.col = "Type of Sale", 
@@ -869,7 +930,7 @@ server <- function(input, output){
           geom_violin(fill = "#8DA0CB")+
           geom_boxplot(width=0.1) +
           scale_y_continuous(labels = scales::comma) +
-          labs(title = paste("Violin plot of", clean_names(input$buy_price_var1), "against Unit Price ($/sqm)"),
+          labs(title = paste("Violin plot of Unit Price ($/sqm) against", clean_names(input$buy_price_var1)),
                x = clean_names(input$buy_price_var1),
                y = "Unit Price ($/sqm)") +
           theme_bw()+
@@ -890,7 +951,7 @@ server <- function(input, output){
                              violin.args = list(fill = "#6D9EC1", alpha = 0.5),
                              xlab = clean_names(input$buy_price_var1),
                              ylab = "Unit Price ($/sqm)",
-                             title = paste("Violin plot of", clean_names(input$buy_price_var1), "against Unit Price ($/sqm)")) +
+                             title = paste("Violin Plot of Unit Price ($/sqm) against", clean_names(input$buy_price_var1))) +
           theme_bw()+
           theme(legend.position ="none",
                 plot.title = element_text(size = rel(1.5), face = "bold"),
@@ -908,7 +969,7 @@ server <- function(input, output){
                              marginal = TRUE,
                              xlab = clean_names(input$buy_price_var1),
                              ylab = "Unit Price ($/sqm)",
-                             title = paste("Scatterplot of", clean_names(input$buy_price_var1), "against Unit Price ($/sqm)")) +
+                             title = paste("Violin Plot of Unit Price ($/sqm) against", clean_names(input$buy_price_var1))) +
           theme_bw()+
           theme(plot.title = element_text(size = rel(1.5), face = "bold"),
                 plot.subtitle = element_text(size = rel(1.3)),
@@ -927,7 +988,7 @@ server <- function(input, output){
     height=600,
     res = 80,
     {
-      sales_selected = sales_t
+      sales_selected = sales
       
       if (input$buyTime_propertyType != "All") {
         sales_selected = sales_selected %>%
@@ -967,9 +1028,9 @@ server <- function(input, output){
           group_by(Sale_Date_MMYY, Postal_District) %>% 
           summarise(monthly_median = median(Unit_Price_PSM)) %>%
           ungroup() %>%
-          arrange(Sale_Date_MMYY, Postal_District) %>%
+          arrange(Postal_District, Sale_Date_MMYY) %>%
           group_by(Postal_District) %>%
-          mutate(monthly_change = (monthly_median-lag(monthly_median))/monthly_median) %>%
+          mutate(monthly_change = (monthly_median-lag(monthly_median))/lag(monthly_median)*100) %>%
           ungroup()
         
         monthly_sales <- monthly_sales[!(is.na(monthly_sales$monthly_change)), ]
@@ -1014,7 +1075,8 @@ server <- function(input, output){
             # remove legend
             #theme(legend.position = "none") +
             geom_vline(data = data_events_dates, aes(xintercept = date), color = "orange", size=1) +
-            geom_vline(data = data_events_key, aes(xintercept = date), color = "red", size=1)
+            geom_vline(data = data_events_key, aes(xintercept = date), color = "red", size=1) +
+            guides(fill=guide_legend(title="% Change from Previous Month"))
           
           p +
             geom_label(data = data_events, aes(x = date, label = name, y=0.6), color = "black", size=3, fontface=2, fill="white")
@@ -1025,7 +1087,7 @@ server <- function(input, output){
         }
       } else {
         p <- ggplot() +
-          ggtitle(paste0("There is No Sales for (",input$buyTime_propertyType, ") - ", input$buyTime_TypeofSale))
+          ggtitle(paste0("There were no sales transactions for (",input$buyTime_propertyType, ") - ", input$buyTime_TypeofSale))
         p
       }
     }
@@ -1034,7 +1096,7 @@ server <- function(input, output){
   output$tsBoxplot_Sales_Plot <- renderPlotly(
     {
       
-      sales_selected = sales_t
+      sales_selected = sales
       
       if (input$buyTimeEach_propertyType != "All") {
         sales_selected = sales_selected %>%
@@ -1069,9 +1131,9 @@ server <- function(input, output){
           theme(text=element_text(size=12, face="bold", color ="#6D9EC1"),
                 axis.text=element_text(size=6, face="bold"),
                 plot.title = element_text(size = 12)) +
-          xlab("Month of Sales") +
-          ylab("Unit Price ($/SQM)") +
-          ggtitle(paste0("Time Series Box Plot: Sales Unit Price ($/SQM) in Postal District ",input$buyTimeEach_postalDesc, " (",input$buyTimeEach_propertyType, ") - ", input$buyTimeEach_TypeofSale)) +
+          xlab("Month of Sale") +
+          ylab("Unit Price ($/sqm)") +
+          ggtitle(paste0("Sales Unit Price ($/sqm) in Postal District ",input$buyTimeEach_postalDesc, " (",input$buyTimeEach_propertyType, ") - ", input$buyTimeEach_TypeofSale)) +
           stat_summary(
             fun = median,
             geom = 'line',
@@ -1091,12 +1153,21 @@ server <- function(input, output){
         output
       } else {
         p <- ggplot() +
-          ggtitle(paste0("There is No Sales for Postal District ",input$buyTimeEach_postalDesc, " (",input$buyTimeEach_propertyType, ") - ", input$buyTimeEach_TypeofSale))
+          ggtitle(paste0("There were no sales transactions for Postal District ",input$buyTimeEach_postalDesc, " (",input$buyTimeEach_propertyType, ") - ", input$buyTimeEach_TypeofSale))
         p
       }
     })
   
 ########################################  Server > Rent Overview  #################################################
+  
+  rent_sf <- rent %>%
+    mutate(No_of_Bedroom_Bin = factor(No_of_Bedroom_Bin, levels = c("1", "2", "3", ">= 4"))) %>%
+    mutate(Lease_month = substring(Lease_Commencement_Date,1,3)) %>%
+    mutate(Lease_month = match(Lease_month, month.abb)) %>%
+    mutate(Lease_year = as.numeric(substring(Lease_Commencement_Date,5,6))) %>%
+    mutate(Lease_Date = paste0('01-',Lease_Commencement_Date)) %>%
+    mutate(Lease_Date = anydate(as.Date(Lease_Date, "%d-%b-%y"))) %>%
+    st_as_sf(coords = c("longitude","latitude")) 
   
   dataset_rent = reactive({
     rent_sf %>%
@@ -1186,7 +1257,7 @@ server <- function(input, output){
         geom_violin(fill = "#8DA0CB")+
         geom_boxplot(width=0.1) +
         scale_y_continuous(labels = scales::comma) +
-        labs(title = paste("Violin plot of", clean_names(input$rent_price_var1), "against Unit Price ($/sqm)"),
+        labs(title = paste("Violin plot of Rental Unit Price ($/sqm) against", clean_names(input$rent_price_var1)),
              x = clean_names(input$rent_price_var1),
              y = "Unit Price ($/sqm)") +
         theme_bw()+
@@ -1206,7 +1277,7 @@ server <- function(input, output){
                            violin.args = list(fill = "#6D9EC1", alpha = 0.5),
                            xlab = clean_names(input$rent_price_var1),
                            ylab = "Unit Price ($/sqm)",
-                           title = paste("Violin plot of", clean_names(input$rent_price_var1), "against Unit Price ($/sqm)")) +
+                           title = paste("Violin plot of Rental Unit Price ($/sqm) against", clean_names(input$rent_price_var1))) +
         theme_bw()+
         theme(legend.position ="none",
               plot.title = element_text(size = rel(1.5), face = "bold"),
@@ -1223,7 +1294,7 @@ server <- function(input, output){
                            marginal = TRUE,
                            xlab = clean_names(input$rent_price_var1),
                            ylab = "Unit Price ($/sqm)",
-                           title = paste("Scatterplot of", clean_names(input$rent_price_var1), "against Unit Price ($/sqm)")) +
+                           title = paste("Scatterplot of Rental Unit Price ($/sqm) against", clean_names(input$rent_price_var1))) +
         theme_bw()+
         theme(plot.title = element_text(size = rel(1.5), face = "bold"),
               plot.subtitle = element_text(size = rel(1.3)),
@@ -1243,7 +1314,7 @@ server <- function(input, output){
     res = 80,
     {
       
-      rent_selected = rent_t
+      rent_selected = rent
       
       if (input$rentTime_propertyType != "All") {
         rent_selected = rent_selected %>%
@@ -1281,9 +1352,9 @@ server <- function(input, output){
           group_by(Rent_Date_MMYY, Postal_District) %>% 
           summarise(monthly_median = median(Unit_Price_PSM)) %>%
           ungroup() %>%
-          arrange(Rent_Date_MMYY, Postal_District) %>%
+          arrange(Postal_District, Rent_Date_MMYY) %>%
           group_by(Postal_District) %>%
-          mutate(monthly_change = (monthly_median-lag(monthly_median))/monthly_median) %>%
+          mutate(monthly_change = (monthly_median-lag(monthly_median))/lag(monthly_median)*100) %>%
           ungroup()
         
         monthly_rent <- monthly_rent[!(is.na(monthly_rent$monthly_change)), ]
@@ -1329,7 +1400,8 @@ server <- function(input, output){
             # remove legend
             #theme(legend.position = "none") +
             geom_vline(data = data_events_dates, aes(xintercept = date), color = "orange", size=1) +
-            geom_vline(data = data_events_key, aes(xintercept = date), color = "red", size=1) 
+            geom_vline(data = data_events_key, aes(xintercept = date), color = "red", size=1) + 
+            guides(fill=guide_legend(title="% Change from Previous Month"))
           
           p +
             geom_label(data = data_events, aes(x = date, label = name, y=0.6), color = "black", size=3, fontface=2, fill="white")
@@ -1340,7 +1412,7 @@ server <- function(input, output){
         }
       } else {
         p <- ggplot() +
-          ggtitle(paste0("There is No Rent for (",input$rentTime_propertyType, ")"))
+          ggtitle(paste0("There were rental transactions for (",input$rentTime_propertyType, ")"))
         p
       }
     }
@@ -1348,7 +1420,7 @@ server <- function(input, output){
   
   output$tsBoxplot_Rent_Plot <- renderPlotly({
     
-    rent_selected = rent_t
+    rent_selected = rent
     #rent_selected = rent %>%
     # filter(Postal_Desc == input$rent_postalDesc & Property_Type == input$rent_propertyType) 
     
@@ -1382,9 +1454,9 @@ server <- function(input, output){
               axis.text=element_text(size=6, face="bold"),
               plot.title = element_text(size = 12)) +
         xlab("Month of Rental") +
-        ylab("Rental Unit Price ($/SQM)") +
+        ylab("Rental Unit Price ($/sqm)") +
         expand_limits(x=0) +
-        ggtitle(paste0("Time Series Box Plot: Rental Unit Price ($/SQM) in Postal District ",input$rentTimeEach_postalDesc, " (",input$rentTimeEach_propertyType, ")")) +
+        ggtitle(paste0("Rental Unit Price ($/sqm) in Postal District ",input$rentTimeEach_postalDesc, " (",input$rentTimeEach_propertyType, ")")) +
         stat_summary(
           fun = median,
           geom = 'line',
@@ -1404,7 +1476,7 @@ server <- function(input, output){
       output
     } else {
       p <- ggplot() +
-        ggtitle(paste0("There is No Rent for Postal District ",input$rentTimeEach_postalDesc, " (",input$rentTimeEach_propertyType, ")"))
+        ggtitle(paste0("There were no rental transactions for Postal District ",input$rentTimeEach_postalDesc, " (",input$rentTimeEach_propertyType, ")"))
       p
     }
   }
@@ -1477,7 +1549,7 @@ server <- function(input, output){
                              x= Property_Type_Bin,
                              xlab = "Property Type",
                              y= Time_to_CBD_min,
-                             ylab = "Driving time to CBS (mins)",
+                             ylab = "Driving time to CBD (mins)",
                              type = input$myth2_test,
                              pairwise.display = "significant",
                              point.args = list(alpha=0),
@@ -1511,8 +1583,8 @@ server <- function(input, output){
     
     else{
       writeup <- c("The mean driving time to CBD for all 5 property types were significantly different from each other.",
-                   "Executive condominiums were the furthest from the CBD, followed by landed housing types. 
-                   While the means between the landed housing types were significantly different, the difference is not large.",
+                   "The travel time between executive condominiums and the CBD was the longest, followed by landed housing types. 
+                   While the mean travel time to CBD between the landed housing types were significantly different, the difference is not large.",
                    "Executive condominiums are a type of hybrid public-private housing subsidised by the Government. 
                    Unlike other types of private housing, they are considered public housing and subject to some restrictions during the first 10 years after completion. 
                    As such, they tend to be located further from the CBD where land is cheaper.",
@@ -1534,21 +1606,21 @@ server <- function(input, output){
    output$myth3_plot <- renderPlotly({
     
     
-    sales_selected = sales_t %>%
-      filter(Project_Name == input$buyRecentLaunch_projName) 
+    sales_selected = sales %>%
+      filter(Project_Name == input$buyRecentLaunch_projName) %>%
+      mutate(year_quart = paste0(year(Sale_Date_DDMMYY),"Q", quarter(Sale_Date_DDMMYY))) %>%
+      mutate(year_quart = as.factor(year_quart))
     
     
     if (nrow(sales_selected) > 0) {
-      sales_selected$year_quart <- floor_date(sales_selected$Sale_Date_DDMMYY,  # Create year-quarter column
-                                              "quarter")
       postal_desc = unique(sales_selected$Postal_Desc)
       
       # New facet label names for Floor_Area_SQM_Bin variable
-      floor_area.labs <- c("<60 SQM", "61 - 90 SQM", "91 - 130 SQM", ">130 SQM")
+      floor_area.labs <- c("<60 sqm", "61 - 90 sqm", "91 - 130 sqm", ">130 sqm")
       names(floor_area.labs) <- c("0 - 60", "61 - 90", "91 - 130", ">130")
       
       
-      p <- ggplot(sales_selected, aes(x=reorder(format(year_quart,'%b%y'),year_quart), y=Unit_Price_PSM)) + 
+      p <- ggplot(sales_selected, aes(x=year_quart, y=Unit_Price_PSM)) + 
         geom_boxplot(
           # custom boxes
           color="skyblue",
@@ -1567,8 +1639,8 @@ server <- function(input, output){
               text=element_text(size=12, face="bold", color ="#6D9EC1"),
               axis.text=element_text(size=8, face="bold")) +
         xlab("Period of Sale") +
-        ylab("Unit Price ($/SQM)") +
-        ggtitle(paste0("Unit Price ($/SQM) for Sales for Project - ", input$buyRecentLaunch_projName, " (District: ", postal_desc , ")")) +
+        ylab("Unit Price ($/sqm)") +
+        ggtitle(paste0("Unit Price ($/sqm) for Sales for Project - ", input$buyRecentLaunch_projName, " (District: ", postal_desc , ")")) +
         stat_summary(
           fun = median,
           geom = 'line',
@@ -1591,19 +1663,19 @@ server <- function(input, output){
       
     } else {
       p <- ggplot() +
-        ggtitle(paste0("There is No Sales for Project - ", input$buyRecentLaunch_projName))
+        ggtitle(paste0("There were no sales transactions for Project - ", input$buyRecentLaunch_projName))
       p
     }
   })
   output$myth3_text <- renderUI({
-    writeup <- c("Most people will perceive that earliest bird will catch the fattest worm and that buying earlier in the property launch phase will result in a better deal.",
-                   "In addition, there is also a belief that bigger floor area will equate to lower Unit Price ($/SQM).",
-                   "Based on the observation from projects with new sale of more than 100 units in the past 3 years, we can observe that those 2 statements are not always true.",
-                   "Taking Irwell Hill Residences, the median pricing across all floor area and time period is almost constant and for One Holland Village Residences, the Unit Price ($/SQM)
-                    is highest for its largest units with floor area of more than 130 SQM, compared to its other categories of floor area.",
-                   "Projects like Le Quest and OLA observed a sharper dip in Unit Price ($/SQM) for short period before risng again.", 
-                   "On the other hand, Stirling Residences Unit Price ($/SQM) for its smaller units of less than 60 SQM has been on an increase trend throughout the 3 years period.",
-                   "Therefore, we can observe that there are multiple variations in pricing strategies adopted by developers.")
+    writeup <- c("Most people assume that earliest bird will catch the fattest worm and that buying a new condominium unit in an earlier launch phase will mean a better deal.",
+                   "In addition, there is also a belief that bigger floor area will equate to lower Unit Price ($/sqm).",
+                   "Based on the observation from projects with new sales of more than 100 units in the past 3 years, we can observe that those 2 statements are not always true.",
+                   "For example, in Irwell Hill Residences, the median pricing across all unit sizes and over time was almost constant. For One Holland Village Residences, the Unit Price ($/sqm)
+                    was highest for its largest units (floor area >130 sqm), compared to its other units of smaller sizes.",
+                   "Some projects like Leedon Green and OLA observed a dip in Unit Price ($/sqm) for a short period before rising again. On the other hand, some like the smaller units (<60sqm) in
+                   saw a consistent increase in unit price throughout the 3 years period.", 
+                   "Therefore, we can observe that different developers have different strategies for pricing their launch phases and the earliest launch is not always the lowest priced.")
       
     display_text <- HTML(paste0(writeup, sep="", collapse="<br><br>"))
     
