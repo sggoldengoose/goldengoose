@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<!--
+Font-awesome icons ie github or twitter
+-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/brands.css" integrity="sha384-n9+6/aSqa9lBidZMRCQHTHKJscPq6NW4pCQBiMmHdUCvPN8ZOg2zJJTkC7WIezWv" crossorigin="anonymous">
+
+<!--
+Google fonts api stuff
+-->
+
+
+
+<title>Spotting a Golden Goose  </title>
+
+<script src="posterv3_files/header-attrs-2.11/header-attrs.js"></script>
+
+
+
+
+
+<style>
+@page {
+size: 45in 38in;
+margin: 0;
+padding: 0;
+}
+body {
+margin: 0;
+font-size: 45px;
+width: 45in;
+height: 38in;
+padding: 0;
+text-align: justify;
+font-family: Palatino;
+}
+.poster_wrap {
+width: 45in;
+height: 38in;
+padding: 0cm;
+}
+.title_container {
+width: 45in;
+height: calc(38in * 0.15);
+overflow: hidden;
+background-color: #E08E0B;
+border: 0.6cm solid #222D32;
+}
+.logo_left {
+float: left;
+width: 10%;
+height: 100%;
+background-color: #E08E0B;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.logo_right {
+float: right;
+width: 10%;
+height: 100%;
+background-color: #E08E0B;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.poster_title {
+text-align: center;
+position: relative;
+float: left;
+width: 80%;
+height: 100%;
+color: #222D32;
+top: 50%;
+transform: translateY(-50%);
+-webkit-transform: translateY(-50%);
+}
+#title {
+font-family: Palatino;
+}
+/* unvisited link */
+a:link {
+color: #609BFF;
+}
+.mybreak {
+  break-before: column;
+}
+/* visited link */
+a:visited {
+color: #609BFF;
+}
+
+/* mouse over link */
+a:hover {
+color: #609BFF;
+}
+
+/* selected link */
+a:active {
+color: #609BFF;
+}
+.poster_body {
+-webkit-column-count: 4; /* Chrome, Safari, Opera */
+-moz-column-count: 4; /* Firefox */
+column-count: 4;
+-webkit-column-fill: auto;
+-moz-column-fill: auto;
+column-fill: auto;
+-webkit-column-rule-width: 1mm;
+-moz-column-rule-width: 1mm;
+column-rule-width: 1mm;
+-webkit-column-rule-style: dashed;
+-moz-column-rule-style: dashed;
+column-rule-style: dashed;
+-webkit-column-rule-color: #E08E0B;
+-moz-column-rule-color: #E08E0B;
+column-rule-color: #E08E0B;
+column-gap: 0.6cm;
+padding-left: calc(0.6cm / 2);
+padding-right: calc(0.6cm / 2);
+height: 100%;
+color: #000000
+background-color: #ffffff;
+}
+.poster_title h1 {
+font-size: 75pt;
+margin: 0;
+border: 0;
+font-weight: normal;
+}
+.poster_body_wrap{
+width: calc(45in + 0.6cm + 0.6cm);
+height: calc(38in * 0.83);
+padding-top: calc(38in * 0.005);
+padding-bottom: calc(38in * 0.01);
+background-color: #ffffff;
+}
+.poster_title h3 {
+color: #222D32;
+font-size: 50pt;
+margin: 0;
+border: 0;
+font-weight: normal;
+}
+.poster_title h3 > sup {
+  font-size: 35pt;
+  margin-left: 0.02em;
+}
+.poster_title h5 {
+color: #222D32;
+font-size: 35pt;
+margin: 0;
+border: 0;
+font-weight: normal;
+}
+img {
+margin-top: 2cm;
+margin-bottom: 0;
+}
+.section {
+  padding: 0.2em;
+}
+.poster_body h1 {
+text-align: center;
+color: #000000;
+font-size: 65pt;
+border: 2mm solid #E08E0B;
+background-color: #E08E0B;
+border-radius: 4mm 0mm;
+margin-top: 2mm;
+margin-bottom: 2mm;
+font-weight: normal;
+}
+.poster_body h2 {
+color: #000000;
+font-size: 40pt;
+padding-left: 4mm;
+font-weight: normal;
+}
+.span {
+width: 200%;
+}
+/* center align leaflet map,
+from https://stackoverflow.com/questions/52112119/center-leaflet-in-a-rmarkdown-document */
+.html-widget {
+margin: auto;
+position: sticky;
+margin-top: 2cm;
+margin-bottom: 2cm;
+}
+.leaflet.html-widget.html-widget-static-bound.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom {
+position: sticky;
+width: 100%;
+}
+pre.sourceCode.r {
+background-color: #dddddd40;
+border-radius: 4mm;
+padding: 4mm;
+width: 75%;
+/* align-items: center; */
+margin: auto;
+padding-left: 2cm;
+}
+code.sourceCode.r{
+background-color: transparent;
+font-size: 20pt;
+border-radius: 2mm;
+}
+.caption {
+font-size: 25pt;
+}
+.table caption {
+font-size: 25pt;
+padding-bottom: 3mm;
+
+}
+code {
+font-size: 1em;
+font-family: monospace;
+background-color: #222D3224;
+color: #E08E0B;
+padding: 1.2mm;
+border-radius: 2mm;
+}
+.poster_title code {
+font-size: 1em;
+}
+table {
+font-size: 40px;
+margin: auto;
+border-top: 3px solid #666;
+border-bottom: 3px solid #666;
+}
+table thead th {
+border-bottom: 3px solid #ddd;
+}
+td {
+padding: 8px;
+}
+th {
+padding: 15px;
+}
+caption {
+margin-bottom: 10px;
+}
+.poster_body p {
+margin-right: 4mm;
+margin-left: 4mm;
+margin-top: 6mm;
+margin-bottom: 10mm;
+}
+.poster_body ol {
+margin-right: 4mm;
+margin-left: 4mm;
+}
+#ul {
+margin-right: 4mm;
+margin-left: 4mm;
+}
+.references p {
+font-size: 20pt;
+}
+.orcid img {
+  width: 1em;
+}
+</style>
+</head>
+<body>
+
+
+<div class="poster_wrap">
+<div class="title_container">
+<!-- Left Logo  -->
+<div class="logo_left">
+</div>
+<!-- Poster Title -->
+<div class= "poster_title">
+<h1 id="title"><strong>Spotting a Golden Goose</strong> <br></h1>
+<h3 id="author"><br> ISSS608 Group 5: Annie Chan Wa LAM<sup></sup>, LIN Shuyan<sup></sup>, TING Peiling<sup></sup></h3><br>
+<h5 id="affiliation"><sup></sup> Advisor: Prof. KAM Tin Seong</h5>
+</div>
+<!-- Right Logo  -->
+<div class="logo_right">
+<img src=images/logo.png style="width: 80%">
+</div>
+</div>
+
+<div class='poster_body_wrap'>
+<div class='poster_body'>
+<div id="abstract" class="section level1">
+<h1>Abstract <img src="images/abstract.png" alt="logo"></h1>
+<p>With series of Covid-19 measures implemented, construction projects have faced <a href="https://www.straitstimes.com/singapore/construction-firms-expect-latest-covid-19-curbs-by-mom-to-further-delay-projects-by-up-to">delays in delivering of new housing projects</a> and working from home contributed to some turning to the <a href="https://www.todayonline.com/singapore/space-squeeze-home-prompts-more-young-singaporeans-move-out">rental market</a>. Yet, <a href="https://www.todayonline.com/singapore/investing-second-private-property-singapore-yielded-relatively-low-returns-over-past">DBS researchers reported that buying a second property yielded the lowest investment growth over the past decade</a> and <a href="https://www.mnd.gov.sg/newsroom/press-releases/view/measures-to-cool-the-property-market">new cooling measures were introduced on 16th Dec 2021</a>.
+In the face of such volatile Property and Rental market, we developed a Shiny App to provide truthful visual insights on the trend of the housing market using data from the last 3 years to help potential property owners that wish to consider a second property make informed data-driven decision on what type of private properties, areas and when to act on to find their golden goose.</p>
+</div>
+<div id="introduction-objectives" class="section level1">
+<h1>Introduction &amp; Objectives <img src="images/intro.png" alt="logo"></h1>
+<p>Many Singaporeans dream of earning passive rental income from renting out a second residential property. In the landscape of large capital outlay and market complexity, our Shiny App aims to help users to:</p>
+<ol style="list-style-type: decimal">
+<li>Make unbiased sales/rental price comparisons of their candidate property to other properties of similar characteristics;</li>
+<li>Better understanding how the physical characteristics (e.g. location) affect sales and rental prices to aid in choosing candidate properties.</li>
+</ol>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>Data Preparation <img src="images/data.png" alt="logo"></h1>
+<p>The app makes uses of sales and rental property data from January 2019 to February 2022 downloaded from the <a href="https://www.ura.gov.sg/reis/index">REALIS</a>, the official source of private property transaction data. The study period was chosen to include some pre-COVID transactions to show the impact of the pandemic. The datasets contain variables on transaction details (price), address and its physical characteristics (e.g. size, tenure). The data is pre-processed by binning and normalisation on categories like Property Type, Floor Area and Unit Price PSM.</p>
+<p>Addresses were enriched by geocoding with the <a href="https://www.onemap.gov.sg/docs/">OneMap API</a> to find 2 accessibility measures: distance to neart MRT station and driving travel time to the CBD. ArcGIS was used to compute the straight line distance of each property to the nearest <a href="https://data.gov.sg/dataset/master-plan-2019-rail-station-layer">MRT station</a>. Travel time to CBD was aggregated by 400mx400m grids. For each grid, the driving time from the centroid to the CBD (Raffles Place MRT station) was obtained from the <a href="https://developers.google.com/maps/documentation/distance-matrix/overview">Google Distance Matrix API</a>.</p>
+</div>
+<div id="methodology" class="section level1">
+<h1>Methodology <img src="images/packages.png" alt="logo"></h1>
+<strong>Exploratory Data Analysis (EDA)</strong> in the form of visualisation techniques will be applied to provide potential buyers with the ability to obtain statistically based insights through visual analytics and allow for sense-making of the property data to help potential buyers make more informed choices while searching for their golden goose.
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:packages"></span>
+<img src="images/icons.jpg" alt="R Packages Used" width="75%" />
+<p class="caption">
+Figure 1: R Packages Used
+</p>
+</div>
+</div>
+<div id="app-concept" class="section level1">
+<h1>App Concept <img src="images/app.png" alt="logo"></h1>
+<div id="tool-1-overview" class="section level2">
+<h2><strong>Tool 1: Overview</strong></h2>
+First, users can study price distribution of past transactions in the “Overview” tab based on desired property characteristics in the reactive map and violin plot (Fig <a href="#fig:overview">2</a>). The map will show the geographic locations and property names, and violin plot shows distribution of price.
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:overview"></span>
+<img src="images/Picture1.png" alt="Overview tab" width="75%" />
+<p class="caption">
+Figure 2: Overview tab
+</p>
+</div>
+</div>
+<div id="tool-2-price-sensitivity" class="section level2">
+<h2><strong>Tool 2: Price Sensitivity</strong></h2>
+Next, users can use the “Price Sensitivity” tab (Fig <a href="#fig:pricesense">3</a>)) to generate insights on how the unit price varies across different property characteristics. Users can choose different types of statistical tests to perform to check if the effect of each attribute on price is statistically significant.
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:pricesense"></span>
+<img src="images/Picture2.png" alt="Overview tab" width="75%" />
+<p class="caption">
+Figure 3: Overview tab
+</p>
+</div>
+</div>
+<div id="tool-3-time-trend" class="section level2">
+<h2><strong>Tool 3: Time Trend</strong></h2>
+After drawing insights on the effect of physical factors on price, this series of tabs allows the user to explore trends over time through time series visualisations. Significant COVID-19 events/regulations are added to show how the property market reacted. Users can zoom in one specific property types or postal districts.
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:time"></span>
+<img src="images/Picture3.png" alt="Overview tab" width="75%" />
+<p class="caption">
+Figure 4: Overview tab
+</p>
+</div>
+</div>
+<div id="tool-4-mythbusting" class="section level2">
+<h2><strong>Tool 4: Mythbusting</strong></h2>
+Lastly, users can explore some interesting questions about residential properties in Singapore to deepen their understanding of residential properties in Singapore and clarify their pre-conceptions. 3 themes are explored:
+- Are older houses bigger?
+- Are some housing types more accessible?
+- Does launch phasing matter when buying new condominiums?
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:myth"></span>
+<img src="images/Picture4.png" alt="Overview tab" width="75%" />
+<p class="caption">
+Figure 5: Overview tab
+</p>
+</div>
+<p>After going through all the tabs, users should be armed with a better understanding of housing trends, price trends and how different physical attributes affect price. They can then return to the overview page to identify and evaluate candidate properties for investment.</p>
+</div>
+</div>
+<div id="insights" class="section level1">
+<h1>Insights <img src="images/insights.png" alt="logo"></h1>
+<p>Based on only data transacted over the last 3 years,</p>
+<ol style="list-style-type: decimal">
+<li>Average size of houses showed a clearly decreasing trend over time, except for semi-detached houses and terrace houses.</li>
+<li>On average, non-landed housing types are nearer to an MRT station the landed housing types.</li>
+<li>Executive condominiums were the furthest from the CBD, followed by landed housing types.</li>
+<li>Different developers have different strategies for pricing their launch phases and the earliest launch is not always the lowest priced.</li>
+</ol>
+</div>
+<div id="future-work" class="section level1">
+<h1>Future Work <img src="images/future.png" alt="logo"></h1>
+<p>Through Visual Analytics, the app allows users gain different perspectives on the Property and Rental market, in an attempt to help them move a step closer to find their golden goose.
+However, as property market continues to be volatile, our proposed future work include:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Sensitivity Analysis through Visualisation</strong>: To include consideration of other key components like the trend in interest rate and housing cooling measures to give users a more holistic view</li>
+<li><strong>Break-Even Analysis</strong>: Shiny App to allow users input values for property attributes to get a prediction of the distribution of break-even time and net rental yield</li>
+</ol>
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+</body>
+</html>

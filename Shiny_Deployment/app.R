@@ -73,10 +73,10 @@ body <- dashboardBody(
               theme = shinytheme('flatly'), #https://rstudio.github.io/shinythemes/
                     titlePanel(h2("Singapore Golden Goose: How to spot a Golden Goose (a.k.a.) Profitable Rental Property in Singapore")),
                     fluidRow(
-                      infoBox(h5("No. of Sales Transactions"), "82,360", icon=icon("stamp"), color="navy", fill=TRUE, width = 3),
-                      infoBox(h5("No. of Lease Transactions"), "298,639", icon=icon("bed"), color="orange", fill=TRUE, width = 3),
-                      infoBox(h5("Period Covered"), "Jan 2019 to Feb 2022", icon=icon("calendar"), color="yellow", fill=TRUE, width = 3),
-                      infoBox(h5("Data Source"), "URA's REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
+                      infoBox(h6("No. of Sales Transactions"), "82,360", icon=icon("stamp"), color="navy", fill=TRUE, width = 3),
+                      infoBox(h6("No. of Lease Transactions"), "298,639", icon=icon("bed"), color="orange", fill=TRUE, width = 3),
+                      infoBox(h6("Period Covered"), "Jan 2019 to Feb 2022", icon=icon("calendar"), color="yellow", fill=TRUE, width = 3),
+                      infoBox(h6("Data Source"), "URA's REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
                       column(width = 12,
                              h3('Our Application'),
                              p('Using SGGoldenGoose Application, landlords-wannabes can analyse and visualize sales and rental transactions in ease, such that more informed choices about investing in private residential property in Singapore to earn passive rental income can be made.'),
@@ -86,10 +86,10 @@ body <- dashboardBody(
                              p('2) Price Sensitivity: generate insights on how the unit price varies across different property characteristics. Performed statistical tests to check if the effect of each attribute on price is statistically significant.'),
                              p('3) Time Trend: explore how property market reacted to significant COVID-19 events by zooming in specific property types or postal districts.'),
                              p('4) Mythbusting: Pre-conceptions about property market demystified! Are older houses bigger? Are some housing types more accessible than others? Does launch phasing matter when buying new condominiums?'),
-                             p(a('User Guide for the Application'), href='https://onedrive.live.com/View.aspx?resid=A191734FD72A1486!1895&wdSlideId=256&wdModeSwitchTime=1648899430874&authkey=!AMWn1oEyKzjUzrg')
-                             )
-                             )
-                    ),
+                             p(a("User Guide for the Application", href="https://onedrive.live.com/View.aspx?resid=A191734FD72A1486!1897&wdSlideId=256&wdModeSwitchTime=1648919938188&authkey=!AHdUeqqf10fl-Ng"))
+                      )
+                    )
+            ),
             column(width = 12,
                    tags$img(src = 'district.png', style="display: block; margin-left: auto; margin-right: auto; max-height: 500px; max-width: 500px;"))
             

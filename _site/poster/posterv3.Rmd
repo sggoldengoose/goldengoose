@@ -1,0 +1,92 @@
+---
+title: "**Spotting a Golden Goose** <br>"
+author:
+  - name: "<br> ISSS608 Group 5: Annie Chan Wa LAM"
+  - name: "LIN Shuyan"
+  - name: "TING Peiling"
+affiliation:
+  - address: "Advisor: Prof. KAM Tin Seong"
+  
+column_numbers: 4
+logoright_name: "images/logo.png"
+primary_colour: "#E08E0B"
+titlebox_bordercol: "#000000"
+titlebox_borderwidth: "0.6cm"
+secondary_colour: "#222D32"
+accent_colour: "#609BFF"
+title_textcol: "#222D32"
+affiliation_textcol: "#222D32"
+sectitle_textcol: "#000000"
+
+
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+bibliography: packages.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+# Abstract <img src="images/abstract.png" alt="logo">
+With series of Covid-19 measures implemented, construction projects have faced [delays in delivering of new housing projects](https://www.straitstimes.com/singapore/construction-firms-expect-latest-covid-19-curbs-by-mom-to-further-delay-projects-by-up-to) and working from home contributed to some turning to the [rental market](https://www.todayonline.com/singapore/space-squeeze-home-prompts-more-young-singaporeans-move-out).  Yet, [DBS researchers reported that buying a second property yielded the lowest investment growth over the past decade](https://www.todayonline.com/singapore/investing-second-private-property-singapore-yielded-relatively-low-returns-over-past) and [new cooling measures were introduced on 16th Dec 2021](https://www.mnd.gov.sg/newsroom/press-releases/view/measures-to-cool-the-property-market).
+In the face of such volatile Property and Rental market, we developed a Shiny App to provide truthful visual insights on the trend of the housing market using data from the last 3 years to help potential property owners that wish to consider a second property make informed data-driven decision on what type of private properties, areas and when to act on to find their golden goose.
+
+# Introduction & Objectives <img src="images/intro.png" alt="logo">
+Many Singaporeans dream of earning passive rental income from renting out a second residential property. In the landscape of large capital outlay and market complexity, our Shiny App aims to help users to:
+
+1. Make unbiased sales/rental price comparisons of their candidate property to other properties of similar characteristics;
+2. Better understanding how the physical characteristics (e.g. location) affect sales and rental prices to aid in choosing candidate properties.
+
+# Data Preparation <img src="images/data.png" alt="logo">
+The app makes uses of sales and rental property data from January 2019 to February 2022 downloaded from the [REALIS](https://www.ura.gov.sg/reis/index), the official source of private property transaction data. The study period was chosen to include some pre-COVID transactions to show the impact of the pandemic. The datasets contain variables on transaction details (price), address and its physical characteristics (e.g. size, tenure). The data is pre-processed by binning and normalisation on categories like Property Type, Floor Area and Unit Price PSM.
+
+Addresses were enriched by geocoding with the [OneMap API](https://www.onemap.gov.sg/docs/) to find 2 accessibility measures: distance to neart MRT station and driving travel time to the CBD. ArcGIS was used to compute the straight line distance of each property to the nearest [MRT station](https://data.gov.sg/dataset/master-plan-2019-rail-station-layer). Travel time to CBD was aggregated by 400mx400m grids. For each grid, the driving time from the centroid to the CBD (Raffles Place MRT station) was obtained from the [Google Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/overview).
+
+# Methodology <img src="images/packages.png" alt="logo">
+**Exploratory Data Analysis (EDA)** in the form of visualisation techniques will be applied to provide potential buyers with the ability to obtain statistically based insights through visual analytics and allow for sense-making of the property data to help potential buyers make more informed choices while searching for their golden goose.
+```{r packages, out.width='75%', fig.align='center', fig.cap='R Packages Used', fig.height=3}
+knitr::include_graphics('images/icons.jpg')
+```
+
+# App Concept <img src="images/app.png" alt="logo">
+## **Tool 1: Overview**
+First, users can study price distribution of past transactions in the "Overview" tab based on desired property characteristics in the reactive map and violin plot (Fig \@ref(fig:overview)). The map will show the geographic locations and property names, and violin plot shows distribution of price.
+```{r overview, out.width='75%', fig.align='center', fig.cap='Overview tab', fig.height=3}
+knitr::include_graphics('images/Picture1.png')
+```
+## **Tool 2: Price Sensitivity**
+Next, users can use the "Price Sensitivity" tab (Fig \@ref(fig:pricesense))) to generate insights on how the unit price varies across different property characteristics. Users can choose different types of statistical tests to perform to check if the effect of each attribute on price is statistically significant.
+```{r pricesense, out.width='75%', fig.align='center', fig.cap='Overview tab', fig.height=3}
+knitr::include_graphics('images/Picture2.png')
+```
+## **Tool 3: Time Trend**
+After drawing insights on the effect of physical factors on price, this series of tabs allows the user to explore trends over time through time series visualisations. Significant COVID-19 events/regulations are added to show how the property market reacted. Users can zoom in one specific property types or postal districts.
+```{r time, out.width='75%', fig.align='center', fig.cap='Overview tab', fig.height=3}
+knitr::include_graphics('images/Picture3.png')
+```
+## **Tool 4: Mythbusting**
+Lastly, users can explore some interesting questions about residential properties in Singapore to deepen their understanding of residential properties in Singapore and clarify their pre-conceptions. 3 themes are explored:
+- Are older houses bigger?
+- Are some housing types more accessible?
+- Does launch phasing matter when buying new condominiums?
+```{r myth, out.width='75%', fig.align='center', fig.cap='Overview tab', fig.height=3}
+knitr::include_graphics('images/Picture4.png')
+```
+After going through all the tabs, users should be armed with a better understanding of housing trends, price trends and how different physical attributes affect price. They can then return to the overview page to identify and evaluate candidate properties for investment.
+
+# Insights <img src="images/insights.png" alt="logo">
+Based on only data transacted over the last 3 years,
+
+1. Average size of houses showed a clearly decreasing trend over time, except for semi-detached houses and terrace houses. 
+2. On average, non-landed housing types are nearer to an MRT station the landed housing types.
+3. Executive condominiums were the furthest from the CBD, followed by landed housing types. 
+4. Different developers have different strategies for pricing their launch phases and the earliest launch is not always the lowest priced.
+
+# Future Work <img src="images/future.png" alt="logo">
+Through Visual Analytics, the app allows users gain different perspectives on the Property and Rental market, in an attempt to help them move a step closer to find their golden goose. 
+However, as property market continues to be volatile, our proposed future work include:
+
+1) **Sensitivity Analysis through Visualisation**: To include consideration of other key components like the trend in interest rate and housing cooling measures to give users a more holistic view
+2) **Break-Even Analysis**: Shiny App to allow users input values for property attributes to get a prediction of the distribution of break-even time and net rental yield
+
