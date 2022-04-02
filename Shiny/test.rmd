@@ -1,0 +1,45 @@
+---
+title: "test"
+author: "Annie Chan Wa Lam"
+date: "3/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(shinydashboard)
+library(shinythemes)
+library(shiny)
+library(sf)
+library(tmap)
+library(DT)
+library(tidyverse)
+library(lubridate)
+library(tidyr)
+library(mapview)
+library(sjlabelled)
+library(anytime)
+
+
+rent <- read_csv("data/rental_prep.csv")
+
+rent_int <- rent %>%
+  mutate(No_of_Bedroom_Bin = factor(No_of_Bedroom_Bin, levels = c("1", "2", "3", ">= 4"))) %>%
+  mutate(Lease_month = substring(Lease_Commencement_Date,1,3)) %>%
+  mutate(Lease_month = match(Lease_month, month.abb)) %>%
+  mutate(Lease_year = as.numeric(substring(Lease_Commencement_Date,5,6))) %>%
+  mutate(Lease_Date = paste0('01-',Lease_Commencement_Date)) %>%
+  mutate(Lease_Date = anydate(as.Date(Lease_Date, "%d-%b-%y"))) %>%
+  mutate(max_rent = ifelse(Lease_Date==max(Lease_Date),Lease_Commencement_Date,""))
+
+rent_sf <- st_as_sf(rent_int, coords = c("longitude","latitude")) 
+
+
+```
+
+```{r}
+st_crs(sales_sf)
+```

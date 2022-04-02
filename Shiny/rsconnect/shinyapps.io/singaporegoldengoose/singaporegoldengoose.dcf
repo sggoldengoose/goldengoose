@@ -1,0 +1,14 @@
+name: singaporegoldengoose
+title: singaporegoldengoose
+username:
+account: singaporegoldengoose
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5950513
+bundleId: 5735071
+url: https://singaporegoldengoose.shinyapps.io/singaporegoldengoose/
+when: 1648472274.60599
+lastSyncTime: 1648472274.60599
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|Annie.R|data/dataprep.R|data/draft/rental_tm_joined.csv|data/draft/sales_tm_joined.csv|data/rental_prep.csv|data/sales_prep.csv|ForConsolidation.R|Ref scripts/app_peiling_v1.R|Ref scripts/app_shuyan_v1.R|Ref scripts/dataprep.R|test.rmd|www/banner.png|www/district.png|www/logo.png|www/newcon.png

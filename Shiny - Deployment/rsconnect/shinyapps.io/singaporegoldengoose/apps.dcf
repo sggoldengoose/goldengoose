@@ -1,0 +1,13 @@
+name: apps
+title: apps
+username:
+account: singaporegoldengoose
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5950723
+bundleId: 5735597
+url: https://singaporegoldengoose.shinyapps.io/apps/
+when: 1648479749.29045
+lastSyncTime: 1648479749.29045
+asMultiple: FALSE
+asStatic: FALSE
