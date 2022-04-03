@@ -76,7 +76,7 @@ body <- dashboardBody(
                       infoBox(h6("No. of Sales Transactions"), "82,360", icon=icon("stamp"), color="navy", fill=TRUE, width = 3),
                       infoBox(h6("No. of Lease Transactions"), "298,639", icon=icon("bed"), color="orange", fill=TRUE, width = 3),
                       infoBox(h6("Period Covered"), "Jan 2019 to Feb 2022", icon=icon("calendar"), color="yellow", fill=TRUE, width = 3),
-                      infoBox(h6("Data Source"), "URA's REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
+                      infoBox(h6("Data Source"), "URA REALIS Database", icon=icon("sourcetree"), color="olive", fill=TRUE, width = 3),
                       column(width = 12,
                              h3('Our Application'),
                              p('Using SGGoldenGoose Application, landlords-wannabes can analyse and visualize sales and rental transactions in ease, such that more informed choices about investing in private residential property in Singapore to earn passive rental income can be made.'),
