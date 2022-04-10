@@ -857,14 +857,14 @@ server <- function(input, output){
     
     tm_shape(shp = dataset(),
              bbox = st_bbox(sales_sf)) +
-      tm_symbols(col = "Type_of_Sale", title.col = "Type of Sale", 
-                 palette=c('#FC8D62','#66C2A5','#8DA0CB'), alpha = 0.7, size = 0.1,
+      tm_dots(col = "Type_of_Sale", title= "Type of Sale", 
+                 palette=c('#FC8D62','#66C2A5','#8DA0CB'), alpha = 0.7,
                  popup.vars=c("Transaction Date"="Sale_Date", 
                               "Transacted Price ($)"="N_Transacted_Price", 
                               "Area (sqm)"="N_Area_SQM", 
                               "Unit Price ($/sqm)"="Unit_Price_PSM")) + 
       tm_basemap("Esri.WorldTopoMap") +
-      tm_view(symbol.size.fixed=FALSE) 
+      tm_view(set.zoom.limits = c(11,17)) 
   })
   
   output$violinPlot <- renderPlotly({
@@ -1188,13 +1188,13 @@ server <- function(input, output){
   output$mapPlotRent <- renderTmap({
     tm_shape(shp = dataset_rent(),
              bbox = st_bbox(rent_sf)) +
-      tm_symbols(size= 0.1, col = "No_of_Bedroom_Bin", title.col = "No. of Bedrooms", 
+      tm_dots(col = "No_of_Bedroom_Bin", title = "No. of Bedrooms", 
                  palette=c('#FC8D62','#66C2A5','#8DA0CB', 'purple'), alpha = 0.7, 
                  popup.vars=c("Lease Commencement Date"="Lease_Commencement_Date", 
                               "Monthly Rent ($)"="Monthly_Rent", 
                               "Area (sqm)"="Floor_Area_SQM_Bin")) + 
       tm_basemap("Esri.WorldTopoMap") +
-      tm_view(symbol.size.fixed=FALSE) 
+      tm_view(set.zoom.limits = c(11,17)) 
   })
   
   output$violinPlotRent <- renderPlotly({
